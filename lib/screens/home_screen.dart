@@ -26,36 +26,31 @@ class HomeScreen extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      body: Row(
+      body: Column(
         children: [
+          Consumer<DataProvider>(builder: (a, b, c) {
+            return DropdownButton(
+              value: b.dropDownValue,
+              icon: const Icon(Icons.keyboard_arrow_down),
+              items: b.listDropDown.map((String items) {
+                return DropdownMenuItem(
+                  value: items,
+                  child: Text('List $items',
+                      style: const TextStyle(fontSize: 16)),
+                );
+              }).toList(),
+              onChanged: (String? newValue) =>
+                  b.onChangeDropDown(newValue),
+            );
+          }),
           Expanded(
-            child: Column(
-              children: [
-                Consumer<DataProvider>(builder: (a, b, c) {
-                  return DropdownButton(
-                    value: b.dropDownValue,
-                    icon: const Icon(Icons.keyboard_arrow_down),
-                    items: b.listDropDown.map((String items) {
-                      return DropdownMenuItem(
-                        value: items,
-                        child: Text('List $items',
-                            style: const TextStyle(fontSize: 16)),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) =>
-                        b.onChangeDropDown(newValue),
-                  );
-                }),
-                Expanded(
-                  child: MyListWidget(
-                      dataRepository:
-                          context.watch<DataProvider>().dropDownValue == 'Todos'
-                              ? CommonRepository<TodoModel>(
-                                  model: TodoModel(), uri: Config.todos)
-                              : CommonRepository<AlbumModel>(
-                                  model: AlbumModel(), uri: Config.albums)),
-                ),
-              ],
+            child: MyListWidget(
+              dataRepository:
+                  context.watch<DataProvider>().dropDownValue == 'Todos'
+                      ? CommonRepository<TodoModel>(
+                          model: TodoModel(), uri: Config.todos)
+                      : CommonRepository<AlbumModel>(
+                          model: AlbumModel(), uri: Config.albums),
             ),
           ),
         ],
